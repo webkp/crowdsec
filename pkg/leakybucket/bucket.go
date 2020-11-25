@@ -44,7 +44,8 @@ type Leaky struct {
 	//CacheRatio is the number of elements that should be kept in memory (compared to capacity)
 	CacheSize int
 	//the unique identifier of the bucket (a hash)
-	Mapkey string
+	Mapkey  string
+	GroupBy string
 	// chan for signaling
 	Signal       chan bool `json:"-"`
 	Reprocess    bool
@@ -279,9 +280,8 @@ func LeakRoutine(leaky *Leaky) {
 				}
 				leaky.logger.Infof("Timed Overflow")
 			} else {
-				leaky.logger.Debugf("bucket underflow, destroy")
 				BucketsUnderflow.With(prometheus.Labels{"name": leaky.Name}).Inc()
-
+				leaky.logger.Debugf("bucket grouped by '%s' expired", leaky.GroupBy)
 			}
 			if log.GetLevel() >= log.TraceLevel {
 				/*don't sdump if it's not going to printed, it's expensive*/
