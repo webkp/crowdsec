@@ -202,9 +202,10 @@ func (n *Node) process(p *types.Event, ctx UnixParserCtx) (bool, error) {
 				e.ExprDebugger.Run(clog, out, exprhelpers.GetExprEnv(map[string]interface{}{"evt": p}))
 			}
 			if out {
-				clog.Infof("Event is whitelisted by Expr !")
+				clog.Infof("Event for %v is whitelisted by Expr !", srcs)
 				p.Whitelisted = true
 				isWhitelisted = true
+				break
 			}
 			hasWhitelist = true
 		default:
